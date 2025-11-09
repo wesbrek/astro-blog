@@ -1,0 +1,45 @@
+---
+import { formatDate } from "../utils";
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  article: CollectionEntry<"blog">;
+}
+
+const { article } = Astro.props;
+---
+
+<div class="mx-auto mt-10 max-w-md">
+  <div class="overflow-hidden rounded-lg bg-white shadow-lg">
+    <a href={"/articles/" + article.slug}>
+      <img
+        src={"/images/" + article.data.image}
+        alt="Article Image"
+        class="h-48 w-full object-cover transition duration-300 ease-in-out hover:opacity-75"
+      />
+    </a>
+    <div class="p-6">
+      <h2 class="mb-2 text-2xl font-semibold">
+        <a href={"/articles/" + article.slug}>{article.data.title}</a>
+      </h2>
+      <p class="mb-4 text-sm text-gray-600">
+        {formatDate(article.data.pubDate)}
+      </p>
+      <div class="flex flex-wrap gap-2">
+        {
+          article.data.tags.map((tag: string, index: number) => (
+            <span
+              class={
+                index % 2 === 0
+                  ? "rounded-full bg-green-500 px-2 py-1 text-xs text-white hover:opacity-90"
+                  : "rounded-full bg-indigo-500 px-2 py-1 text-xs text-white hover:opacity-90"
+              }
+            >
+              <a href={"/articles/tag/" + tag}>{tag}</a>
+            </span>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</div>
