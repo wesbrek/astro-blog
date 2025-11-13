@@ -1,0 +1,16 @@
+---
+import MainLayout from "../../layouts/MainLayout.astro";
+import { getAllBlogArticlesSorted } from "../../utils";
+
+const query: string | null = Astro.url.searchParams.get("query");
+
+const searchResults = (await getAllBlogArticlesSorted()).filter((article) => {
+  const titleMatch: boolean = article.data.title
+    .toLocaleLowerCase()
+    .includes(query!.toLocaleLowerCase());
+});
+---
+
+<MainLayout title="Search Results">
+  <h1>{query}</h1>
+</MainLayout>
