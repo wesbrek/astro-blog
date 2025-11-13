@@ -1,4 +1,6 @@
 ---
+import ArticleCard from "../../components/ArticleCard.astro";
+import SearchForm from "../../components/SearchForm.astro";
 import MainLayout from "../../layouts/MainLayout.astro";
 import { getAllBlogArticlesSorted } from "../../utils";
 
@@ -6,11 +8,37 @@ const query: string | null = Astro.url.searchParams.get("query");
 
 const searchResults = (await getAllBlogArticlesSorted()).filter((article) => {
   const titleMatch: boolean = article.data.title
-    .toLocaleLowerCase()
-    .includes(query!.toLocaleLowerCase());
+    .toLowerCase()
+    .includes(query!.toLowerCase());
+
+  const bodyMatch: boolean = article.body
+    .toLowerCase()
+    .includes(query!.toLowerCase());
+
+  const slugMatch: boolean = article.slug
+    .toLowerCase()
+    .includes(query!.toLowerCase());
+
+  const tagMatch: boolean = article.data.tags.some((tag) =>
+    tag.toLowerCase().includes(query!.toLowerCase()),
+  );
+
+  return titleMatch || bodyMatch || slugMatch || tagMatch;
 });
 ---
 
 <MainLayout title="Search Results">
-  <h1>{query}</h1>
+  <a
+    href=""
+    class="mb-6 inline-block bg-gray-100 p-2 hover:bg-indigo-500 hover:text-white"
+    >All Articles</a
+  >
+
+  <SearchForm />
+  <br />
+  <h1 class="mt-6 pb-3 text-2xl">Results For <strong>{query}</strong></h1>
+
+  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    {searchResults.map((article) => <ArticleCard article={article} />)}
+  </div>
 </MainLayout>
